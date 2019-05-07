@@ -4,6 +4,8 @@
 #import <Preferences/PSSpecifier.h>
 #import <Preferences/PSListController.h>
 
+#import "NSTask.h"
+
 @interface PSListController (Addition)
 - (void)_returnKeyPressed:(id)arg1;
 @end
@@ -126,14 +128,28 @@
 		[[self navigationController] presentViewController:twitter animated:YES completion:nil];
 	}
 }
-
+- (void)showPrompt
+{
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:self.title message:@"You must respring your device for the changes to apply." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Respring", nil];
+	alert.tag = 55;
+	[alert show];
+}
 - (void)reset
 {
 	[@{} writeToFile:@PLIST_PATH_Settings atomically:YES];
 	notify_post("com.julioverne.goodwifi/SettingsChanged");
 	[self reloadSpecifiers];
+	[self showPrompt];
 }
-
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == 55 && buttonIndex == 1) {
+        NSTask *t = [[NSTask alloc] init];
+		[t setLaunchPath:@"/usr/bin/killall"];
+		[t setArguments:[NSArray arrayWithObjects:@"backboardd", @"Springboard", nil]];
+		[t launch];
+    }
+}
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
 {
 	@autoreleasepool {
@@ -141,6 +157,9 @@
 		Prefs[[specifier identifier]] = value;
 		[Prefs writeToFile:@PLIST_PATH_Settings atomically:YES];
 		notify_post("com.julioverne.goodwifi/SettingsChanged");
+		if ([[specifier properties] objectForKey:@"PromptRespring"]) {
+			[self showPrompt];
+		}
 	}
 }
 

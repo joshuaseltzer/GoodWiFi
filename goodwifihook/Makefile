@@ -1,7 +1,8 @@
+ARCHS=armv7 arm64 arm64e
+TARGET = iphone:11.2:8.0
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = GoodWiFi
-
 GoodWiFi_FILES = GoodWiFi.xm
 GoodWiFi_FRAMEWORKS = CydiaSubstrate UIKit Security
 GoodWiFi_PRIVATE_FRAMEWORKS = MobileWiFi
