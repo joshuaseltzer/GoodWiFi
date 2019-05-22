@@ -1,7 +1,7 @@
 Package: com.julioverne.goodwifi
 Name: GoodWiFi
 Author: julioverne
-Version: 0.0~beta6
+Version: 0.0~beta4-cobra2168
 Depends: mobilesubstrate, preferenceloader
 Architecture: iphoneos-arm
 Description: Better WiFi Preferences
